@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+	<title>Stock Market Generator | Created By Saim</title>
+	<style type="text/css">
+		@font-face {
+		    font-family: 'ArabicFont';
+		    src: url('./GE_SS_Two_Medium.otf') format('opentype');
+		    font-weight: normal;
+		    font-style: normal;
+		}
+			
+		#dynamic_columns_generator .column {
+			border: 1px solid;
+			padding: 10px;
+			margin: 10px;
+		}
+		.has-custom-text{
+			color: #333333;
+		}
+		.columns{
+			margin-bottom: 20px !important;
+			border-radius: 10px;
+		}
+		#preview_button_container{
+			display: none;
+		}
+		#header_text_modal{
+			font-weight: 700;
+			font-size: 32px;
+		}
+		.header-preview, .body-preview{
+			height: 100px;
+			/*box-shadow: inset 6px 2px 13px 6px #1C1714;*/
+			border: 1px solid;
+		}
+		.company_name,.company_value,.inc_dec,.percentage{
+			font-size: 32px;
+    		font-weight: 700;
+    		line-height: 1;
+		}
+		.percentage{
+            margin: 0 5px;
+        }
+    /* Disabled - using default system Arabic font for company names instead
+    .arabic-template .company_name,
+    .arabic-template .company_name b,
+    .arabic-template input[name='company_name[]'] {
+    	font-family: 'ArabicFont' !important;
+    }
+    */
+    /* Disabled - using default system Arabic font for header instead
+    #capture_area.arabic-template #header_text_modal {
+    	font-family: 'ArabicFont' !important;
+    }
+    */
+    .arrow-down {
+		  &:after {
+		    content: '\25bc';
+		    padding-left: 0.3em;
+		  }
+		}
+    .arrow-up {
+		  &:after {
+		    content: '\25b2';
+		    padding-left: 0.3em;
+		  }
+		}
+    .modal-card-body{
+    	position: relative;
+    }
+    
+    /*.modal-card-body::before{
+    	content: "";
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background: url('https://forbesme-prestaging-media.s3.us-east-2.amazonaws.com/lists/uploads/2025/02/24045541/Graph.png') center/cover no-repeat;
+	    opacity: 0.2; 
+	    z-index: 0;
+    }*/
+
+		body{
+			padding-bottom: 100px;
+		}
+		@media screen and (min-width: 769px), print{
+            .modal-card, .modal-content {
+                margin: 0 auto;
+                max-height: 100vh !important;
+                width: 1000px !important;
+            }
+        }
+	</style>
+</head>
+<body>
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+	  <div class="navbar-brand">
+	    <h1 class="title ml-6 mt-5">Stock Market Template Generator</h1>
+	  </div>
+	</nav>
+	<div class="container is-fluid mt-6">
+		<div class="columns">
+			<div class="column is-one-quarter">
+			</div>
+			<div class="column is-one-quarter">
+				<div class="field">
+				  <label class="label">Header Text</label>
+				  <div class="control">
+				    <div class="select is-fullwidth mb-2">
+					  <select id="header_text_select">
+					    <option value="">-- Select Preset or Type Below --</option>
+					    <option value="افتتاح الأسواق الأميركية">افتتاح الأسواق الأميركية</option>
+					    <option value="إغلاق الأسواق الأميركية">إغلاق الأسواق الأميركية</option>
+					    <option value="إغلاق الأسواق الأوروبية">إغلاق الأسواق الأوروبية</option>
+					    <option value="إغلاق الأسواق الآسيوية">إغلاق الأسواق الآسيوية</option>
+					    <option value="إغلاق الأسواق العربية">إغلاق الأسواق العربية</option>
+					    <option value="أسعار النفط">أسعار النفط</option>
+					    <option value="أسعار المعادن">أسعار المعادن</option>
+					  </select>
+					</div>
+				    <input class="input" type="text" id="header_text" placeholder="Or type custom header text">
+				  </div>
+				</div>
+				<div class="field">
+				  <label class="label">Language</label>
+				  <div class="control">
+				 
+				    <div class="select">
+					  	<select name="language" id="language">
+						    <option value="">Select language</option>
+						    <option value="en">English</option>
+						    <option value="ar">Arabic</option>
+						</select>
+					</div>
+				  </div>
+				</div>
+				<div class="field">
+				 <!-- <label class="label">Header Background Color</label>-->
+				  <div class="control">
+				    <input class="input" type="hidden" value="#2A2826" id="header_background" placeholder="Header Background Color">
+				  </div>
+				</div>
+			</div>
+			<div class="column is-one-quarter" id="rows_data">
+				<div class="field">
+				  <label class="label">Stock Market Total Rows</label>
+				  <div class="control">
+				    <div class="select">
+					  <select name="rows_generator" id="rows_generator">
+					    <option>Select Number Of Rows</option>
+					    <option value="1">1</option>
+					    <option value="2">2</option>
+					    <option value="3">3</option>
+					    <option value="4">4</option>
+					    <option value="5">5</option>
+					    <option value="6">6</option>
+					    <option value="7">7</option>
+					    <option value="8">8</option>
+					    <option value="9">9</option>
+					    <option value="10">10</option>
+					  </select>
+					</div>
+				  </div>
+				</div>
+
+				<div class="field">
+				<!--  <label class="label">Rows Background Color</label>-->
+				  <div class="control">
+				    <input class="input" type="hidden" value="#2A2826" id="rows_bg" placeholder="Rows Background Color">
+				  </div>
+				</div>
+				<div class="control">
+				    <button id="add_rows" class="button is-link is-light">Add Rows</button>
+				    <button id="refresh_page" class="button is-link is-light">Refresh</button>
+				    <button id="fetch_live_data" class="button is-success is-light">Fetch Live Data</button>
+				</div>
+			</div>
+		</div>
+		<div class="column is-one-quarter">
+		</div>
+		<div class="columns is-multiline is-centered" id="dynamic_columns_generator"></div>
+		<div class="columns is-centered" id="preview_button_container">
+			<div class="control">
+			    <button id="preview_modal" class="button is-primary modal-button" data-target="modal-ter" aria-haspopup="true">Preview</button>
+			</div>
+		</div>
+	</div>
+	<div class="modal" id="modal_previewer">
+	  <div class="modal-background"></div>
+	  <div class="modal-card">
+	    <header class="modal-card-head">
+	      <p class="modal-card-title">Preview</p>
+	      <button class="button is-success mr-4" id="download_image">Download Image</button>
+	      <button class="delete" id="close_modal" aria-label="close"></button>
+	    </header>
+	    <section class="modal-card-body" id="capture_area">
+	     <div class="header-preview columns is-vcentered" id="modal_header">
+	     	<div class="column is-one-third header-column">
+	     		<img width="180px" style="margin-left:20px" id="forbes_logo" src="./LogoWhite.png">
+	     	</div>
+	     	<div class="column has-text-white has-text-centered">
+	     		<h1 id="header_text_modal"></h1>
+	     	</div>
+	     </div>
+	     <div id="stock_data_container">
+	     	
+	     </div>
+	    </section>
+	  </div>
+	</div>
+</body>
+
+<script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		// Preset configuration: header text -> { rows: number, companies: array, symbols: array, language: string }
+		const presetConfig = {
+			'افتتاح الأسواق الأميركية': {
+				rows: 3,
+				companies: ['DJIA', 'S&P 500', 'NASDAQ'],
+				symbols: ['.DJI', '.SPX', '.IXIC'],
+				language: 'en'
+			},
+			'إغلاق الأسواق الأميركية': {
+				rows: 3,
+				companies: ['DJIA', 'S&P 500', 'NASDAQ'],
+				symbols: ['.DJI', '.SPX', '.IXIC'],
+				language: 'en'
+			},
+			'إغلاق الأسواق الأوروبية': {
+				rows: 5,
+				companies: ['DAX', 'FTSE', 'CAC', 'FTSE MIB', 'STOXX 600'],
+				symbols: ['.GDAXI', '.FTSE', '.FCHI', '.FTMIB', '.STOXX'],
+				language: 'en'
+			},
+			'إغلاق الأسواق الآسيوية': {
+				rows: 6,
+				companies: ['Nikkei', 'Shanghai', 'HSI', 'ASX 200', 'KOSPI', 'NIFTY'],
+				symbols: ['.N225', '.SSEC', '.HSI', '.AXJO', '.KS11', '.NSEI'],
+				language: 'en'
+			},
+			'إغلاق الأسواق العربية': {
+				rows: 9,
+				companies: ['السوق السعودي', 'سوق أبوظبي', 'سوق دبي', 'بورصة الكويت', 'بورصة قطر', 'سوق مسقط', 'بورصة البحرين', 'بورصة مصر', 'بورصة الأردن'],
+				symbols: [], // Uses ZagTrader API instead
+				zagtraderIds: [10696, 1130, 1128, 10905, 11552], // Saudi, Abu Dhabi, Dubai, Kuwait, Qatar (first 5)
+				msxIndex: 5, // Index 5 = سوق مسقط (Muscat)
+				bahrainIndex: 6, // Index 6 = بورصة البحرين (Bahrain)
+				jordanIndex: 8, // Index 8 = بورصة الأردن (Jordan)
+				// Note: Egypt requires manual entry
+				language: 'ar'
+			},
+			'أسعار النفط': {
+				rows: 3,
+				companies: ['BRENT', 'WTI CRUDE', 'NAT GAS'],
+				symbols: ['@LCO.1', '@CL.1', '@NG.1'],
+				language: 'en'
+			},
+			'أسعار المعادن': {
+				rows: 5,
+				companies: ['GOLD', 'SILVER', 'COPPER', 'PLATINUM', 'PALLADIUM'],
+				symbols: ['@GC.1', '@SI.1', '@HG.1', '@PL.1', '@PA.1'],
+				language: 'en'
+			}
+		};
+
+		// CNBC API endpoint
+		const CNBC_API_BASE = 'https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol';
+
+		// ZagTrader API endpoint (for Arab markets)
+		const ZAGTRADER_API_BASE = 'https://zagtrader.prod.cnbcarabia.com/api/PriceQuoteAPI.php';
+
+		// Muscat MSX API endpoint
+		const MSX_API_BASE = 'https://www.msx.om/api.aspx/Indices';
+
+		// Mubasher API endpoint (for Jordan)
+		const MUBASHER_API_BASE = 'https://www.mubasher.info/api/1/markets';
+
+		// Bahrain Bourse API endpoint
+		const BAHRAIN_API_BASE = 'https://webapi.bahrainbourse.com/api/data/GetTabularDataOnHome?storedProcdure=HomePageBahrainAllShareIndex&name=HPBAllShareIndex';
+		const BAHRAIN_API_KEY = 'b2d04a3be333491d817bc518343c03f496da61e30ae443459536f5c186ab599c';
+
+		// CORS proxy
+		const CORS_PROXY = 'https://corsproxy.io/?';
+
+		// Function to fetch Muscat market data using CORS proxy
+		async function fetchMSXData() {
+			const proxyUrl = CORS_PROXY + encodeURIComponent(MSX_API_BASE);
+
+			try {
+				console.log('Fetching MSX via proxy...');
+				const response = await fetch(proxyUrl, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json; charset=utf-8',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify({ Type: 'MSX30' })
+				});
+				const data = await response.json();
+				console.log('MSX data:', data);
+				if (data && data.d && data.d.length > 0) {
+					return data.d[0];
+				}
+				return null;
+			} catch (error) {
+				console.error('Error fetching MSX data:', error);
+				return null;
+			}
+		}
+
+		// Function to fetch Jordan market data using CORS proxy
+		async function fetchJordanData() {
+			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/ASE');
+
+			try {
+				console.log('Fetching Jordan via proxy...');
+				const response = await fetch(proxyUrl);
+				const data = await response.json();
+				console.log('Jordan data:', data);
+				if (data && data.priceBar) {
+					return data.priceBar;
+				}
+				return null;
+			} catch (error) {
+				console.error('Error fetching Jordan data:', error);
+				return null;
+			}
+		}
+
+		// Function to fetch Bahrain market data using CORS proxy
+		async function fetchBahrainData() {
+			const proxyUrl = CORS_PROXY + encodeURIComponent(BAHRAIN_API_BASE);
+
+			try {
+				console.log('Fetching Bahrain via proxy...');
+				const response = await fetch(proxyUrl, {
+					headers: {
+						'Authorization': 'Bearer ' + BAHRAIN_API_KEY,
+						'Content-Type': 'application/json; charset=utf-8',
+						'Accept': 'application/json'
+					}
+				});
+				const data = await response.json();
+				console.log('Bahrain data:', data);
+				if (data && data.data && data.data.length > 0) {
+					return data.data[0];
+				}
+				return null;
+			} catch (error) {
+				console.error('Error fetching Bahrain data:', error);
+				return null;
+			}
+		}
+
+		// Function to fetch live data from CNBC
+		async function fetchCNBCData(symbols) {
+			const symbolsParam = symbols.join('|');
+			const url = `${CNBC_API_BASE}?symbols=${symbolsParam}&requestMethod=itv&noCache=${Date.now()}&fund=1&exthrs=1&output=json&events=1`;
+
+			try {
+				const response = await fetch(url);
+				const data = await response.json();
+				return data;
+			} catch (error) {
+				console.error('Error fetching CNBC data:', error);
+				alert('Error fetching data from CNBC. This might be due to CORS restrictions. Try using a CORS proxy or running from a server.');
+				return null;
+			}
+		}
+
+		// Function to fetch Arab markets data from ZagTrader
+		async function fetchZagTraderData(tickerIds) {
+			const results = [];
+
+			for (const tickerId of tickerIds) {
+				try {
+					const url = `${ZAGTRADER_API_BASE}?tickerId=${tickerId}&marketIndexOnly=0&outputType=json`;
+					const response = await fetch(url);
+					const data = await response.json();
+					// ZagTrader API returns: {code: "R200", data: {list: [...]}}
+					if (data && data.code === "R200" && data.data && data.data.list && data.data.list.length > 0) {
+						results.push(data.data.list[0]);
+					}
+				} catch (error) {
+					console.error(`Error fetching ZagTrader data for ticker ${tickerId}:`, error);
+				}
+			}
+
+			return results;
+		}
+
+
+		// Function to fill form with ZagTrader data (Arab markets)
+		function fillFormWithZagTraderData(quotes, companies, msxIndex, msxData, bahrainIndex, bahrainData, jordanIndex, jordanData) {
+			const companyInputs = $("input[name='company_name[]']");
+			const valueInputs = $("input[name='value_number[]']");
+			const changeInputs = $("input[name='inc_dev_value[]']");
+			const percentInputs = $("input[name='percentage_value[]']");
+
+			// Fill ZagTrader data (first 5 markets)
+			quotes.forEach((quote, index) => {
+				if (index < companyInputs.length) {
+					// Use the preset company name (Arabic)
+					$(companyInputs[index]).val(companies[index]);
+
+					// Format the price value (ZagTrader uses lastPrice)
+					let priceVal = quote.lastPrice || '';
+					$(valueInputs[index]).val(priceVal);
+
+					// Format change with + or - sign (ZagTrader uses lastDelta)
+					let changeVal = String(quote.lastDelta || '0');
+					if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+						changeVal = parseFloat(changeVal) >= 0 ? '+' + changeVal : changeVal;
+					}
+					$(changeInputs[index]).val(changeVal);
+
+					// Format percentage (ZagTrader uses changePercent)
+					let pctVal = String(quote.changePercent || '0');
+					pctVal = pctVal.replace('%', '').trim();
+					// Round to 2 decimal places
+					pctVal = parseFloat(pctVal).toFixed(2);
+					if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
+						pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
+					}
+					pctVal = pctVal + '%';
+					$(percentInputs[index]).val(pctVal);
+				}
+			});
+
+			// Fill Muscat data if available
+			if (msxIndex !== undefined && msxData) {
+				$(companyInputs[msxIndex]).val(companies[msxIndex]);
+
+				// MSX data has: MSX30 (value), ChangeValue (change), Change (percentage)
+				$(valueInputs[msxIndex]).val(msxData.MSX30 || '');
+
+				let changeVal = String(msxData.ChangeValue || '0');
+				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
+				}
+				$(changeInputs[msxIndex]).val(changeVal);
+
+				let pctVal = String(msxData.Change || '0');
+				pctVal = pctVal.replace('%', '').trim();
+				pctVal = parseFloat(pctVal).toFixed(2);
+				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
+					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
+				}
+				pctVal = pctVal + '%';
+				$(percentInputs[msxIndex]).val(pctVal);
+			}
+
+			// Fill Bahrain data if available
+			if (bahrainIndex !== undefined && bahrainData) {
+				$(companyInputs[bahrainIndex]).val(companies[bahrainIndex]);
+
+				// Bahrain data has: Index (value), Change (contains both change and percentage like "3.38\t 0.17 %")
+				$(valueInputs[bahrainIndex]).val(bahrainData.Index || '');
+
+				// Parse the Change field which contains "3.38\t 0.17 %"
+				const changeStr = bahrainData.Change || '0\t0%';
+				const changeParts = changeStr.split(/\t|\s+/);
+
+				let changeVal = changeParts[0] || '0';
+				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
+				}
+				$(changeInputs[bahrainIndex]).val(changeVal);
+
+				let pctVal = changeParts[1] || '0';
+				pctVal = pctVal.replace('%', '').trim();
+				pctVal = parseFloat(pctVal).toFixed(2);
+				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
+					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
+				}
+				pctVal = pctVal + '%';
+				$(percentInputs[bahrainIndex]).val(pctVal);
+			}
+
+			// Fill Jordan data if available
+			if (jordanIndex !== undefined && jordanData) {
+				$(companyInputs[jordanIndex]).val(companies[jordanIndex]);
+
+				// Mubasher priceBar has: value, change, changePercentage
+				$(valueInputs[jordanIndex]).val(jordanData.value || '');
+
+				let changeVal = String(jordanData.change || '0');
+				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
+				}
+				$(changeInputs[jordanIndex]).val(changeVal);
+
+				let pctVal = String(jordanData.changePercentage || '0');
+				pctVal = pctVal.replace('%', '').trim();
+				pctVal = parseFloat(pctVal).toFixed(2);
+				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
+					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
+				}
+				pctVal = pctVal + '%';
+				$(percentInputs[jordanIndex]).val(pctVal);
+			}
+		}
+
+		// Symbol to display name mapping
+		const symbolDisplayNames = {
+			// US Markets
+			'.DJI': 'DJIA',
+			'.SPX': 'S&P 500',
+			'.IXIC': 'NASDAQ',
+			// European Markets
+			'.GDAXI': 'DAX',
+			'.FTSE': 'FTSE',
+			'.FCHI': 'CAC',
+			'.FTMIB': 'FTSE MIB',
+			'.STOXX': 'STOXX 600',
+			// Asian Markets
+			'.N225': 'Nikkei',
+			'.SSEC': 'Shanghai',
+			'.HSI': 'HSI',
+			'.AXJO': 'ASX 200',
+			'.KS11': 'KOSPI',
+			'.NSEI': 'NIFTY',
+			// Oil & Gas
+			'@LCO.1': 'BRENT',
+			'@CL.1': 'WTI CRUDE',
+			'@NG.1': 'NAT GAS',
+			// Metals
+			'@GC.1': 'GOLD',
+			'@SI.1': 'SILVER',
+			'@HG.1': 'COPPER',
+			'@PL.1': 'PLATINUM',
+			'@PA.1': 'PALLADIUM'
+		};
+
+		// Function to fill form with fetched data
+		function fillFormWithData(stockData) {
+			if (!stockData || !stockData.FormattedQuoteResult || !stockData.FormattedQuoteResult.FormattedQuote) {
+				alert('No data received from CNBC');
+				return;
+			}
+
+			const quotes = stockData.FormattedQuoteResult.FormattedQuote;
+			const companyInputs = $("input[name='company_name[]']");
+			const valueInputs = $("input[name='value_number[]']");
+			const changeInputs = $("input[name='inc_dev_value[]']");
+			const percentInputs = $("input[name='percentage_value[]']");
+
+			quotes.forEach((quote, index) => {
+				if (index < companyInputs.length) {
+					// Get the display name from mapping or use shortName/name
+					let displayName = symbolDisplayNames[quote.symbol] || quote.shortName || quote.name;
+
+					$(companyInputs[index]).val(displayName);
+					$(valueInputs[index]).val(quote.last);
+
+					// Format change with + or - sign
+					let changeVal = quote.change;
+					if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+						changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
+					}
+					$(changeInputs[index]).val(changeVal);
+
+					// Format percentage
+					let pctVal = quote.change_pct || quote.changePct || '';
+					pctVal = pctVal.replace('%', '').trim();
+					if (pctVal && !pctVal.endsWith('%')) {
+						pctVal = pctVal + '%';
+					}
+					$(percentInputs[index]).val(pctVal);
+				}
+			});
+		}
+
+		// Fetch Live Data button click handler
+		$('#fetch_live_data').click(async function() {
+			const selectedPreset = $('#header_text_select').val();
+
+			if (!selectedPreset) {
+				alert('Please select a market preset first.');
+				return;
+			}
+
+			const config = presetConfig[selectedPreset];
+			if (!config) {
+				alert('Invalid preset selected.');
+				return;
+			}
+
+			$(this).addClass('is-loading');
+
+			// Check if this preset uses ZagTrader (Arab markets)
+			if (config.zagtraderIds && config.zagtraderIds.length > 0) {
+				const zagData = await fetchZagTraderData(config.zagtraderIds);
+
+				// Also fetch Muscat data if configured
+				let msxData = null;
+				if (config.msxIndex !== undefined) {
+					msxData = await fetchMSXData();
+				}
+
+				// Also fetch Bahrain data if configured
+				let bahrainData = null;
+				if (config.bahrainIndex !== undefined) {
+					bahrainData = await fetchBahrainData();
+				}
+
+				// Also fetch Jordan data if configured
+				let jordanData = null;
+				if (config.jordanIndex !== undefined) {
+					jordanData = await fetchJordanData();
+				}
+
+				$(this).removeClass('is-loading');
+
+				if (zagData && zagData.length > 0) {
+					fillFormWithZagTraderData(zagData, config.companies, config.msxIndex, msxData, config.bahrainIndex, bahrainData, config.jordanIndex, jordanData);
+				} else {
+					alert('Error fetching Arab markets data. Please try again.');
+				}
+			} else if (config.symbols && config.symbols.length > 0) {
+				// Use CNBC API
+				const data = await fetchCNBCData(config.symbols);
+				$(this).removeClass('is-loading');
+
+				if (data) {
+					fillFormWithData(data);
+				}
+			} else {
+				$(this).removeClass('is-loading');
+				alert('البيانات المباشرة غير متوفرة لهذا السوق. يرجى إدخال البيانات يدوياً.\n\nLive data is not available for this market. Please enter data manually.');
+			}
+		});
+
+		// Function to generate rows
+		function generateRows(numRows, companies = []) {
+			// Clear existing rows first
+			$('#dynamic_columns_generator').html('');
+
+			for (var i = 0; i < numRows; i++) {
+				let companyName = companies[i] || '';
+				let row = `<div class="column is-one-quarter">
+						<div class="field">
+						  <label class="label">Company Name</label>
+						  <div class="control">
+						    <input class="input" type="text" name="company_name[]" placeholder="Enter Company Name" value="${companyName}">
+						  </div>
+						</div>
+						<div class="field">
+						  <label class="label">Value</label>
+						  <div class="control">
+						    <input class="input" type="text" name="value_number[]" placeholder="Enter Value">
+						  </div>
+						</div>
+						<div class="field">
+						  <label class="label">Increase or Decrease Value</label>
+						  <div class="control">
+						    <input class="input" type="text" name="inc_dev_value[]" placeholder="Enter Value">
+						  </div>
+						</div>
+						<div class="field">
+						  <label class="label">Enter Percentage</label>
+						  <div class="control">
+						    <input class="input" type="text" name="percentage_value[]" placeholder="Enter Percentage">
+						  </div>
+						</div>
+					</div>`;
+				$('#dynamic_columns_generator').append(row);
+			}
+			$('#preview_button_container').css('display','flex');
+		}
+
+		// Header text preset selection
+		$('#header_text_select').change(function(){
+			let selectedValue = $(this).val();
+			if(selectedValue !== ""){
+				$('#header_text').val(selectedValue);
+
+				// Auto-generate rows based on preset
+				if(presetConfig[selectedValue]){
+					let config = presetConfig[selectedValue];
+					$('#rows_generator').val(config.rows);
+					generateRows(config.rows, config.companies);
+
+					// Auto-set language based on preset
+					if(config.language){
+						$('#language').val(config.language);
+					}
+				}
+			}
+		});
+
+		// Clear dropdown selection when user types custom text
+		$('#header_text').on('input', function(){
+			$('#header_text_select').val('');
+		});
+
+		// Refresh the page
+		$('#refresh_page').click(function(){ location.reload();});
+		// Add Rows
+		$('#add_rows').click(function(){
+			let rows_generator = $('#rows_generator').val();
+			if (rows_generator != null) {
+				for (var i = 1; i <= rows_generator; i++) {
+					row = `<div class="column is-one-quarter">
+							<div class="field">
+							  <label class="label">Company Name</label>
+							  <div class="control">
+							    <input class="input" type="text" name="company_name[]" placeholder="Enter Company Name">
+							  </div>
+							</div>
+							<div class="field">
+							  <label class="label">Value</label>
+							  <div class="control">
+							    <input class="input" type="text" name="value_number[]" placeholder="Enter Value">
+							  </div>
+							</div>
+							<div class="field">
+							  <label class="label">Increase or Decrease Value</label>
+							  <div class="control">
+							    <input class="input" type="text" name="inc_dev_value[]" placeholder="Enter Value">
+							  </div>
+							</div>
+							<div class="field">
+							  <label class="label">Enter Percentage</label>
+							  <div class="control">
+							    <input class="input" type="text" name="percentage_value[]" placeholder="Enter Percentage">
+							  </div>
+							</div>
+						</div>`;
+					$('#dynamic_columns_generator').append(row);
+					$('#preview_button_container').css('display','flex');
+				}
+			}
+			
+		});
+		$('#preview_modal').click(function(){
+			let rows_generator = $('#rows_generator').val();
+			companies = $("input[name='company_name[]']").map(function(){return $(this).val();}).get();
+			value_numbers = $("input[name='value_number[]']").map(function(){return $(this).val();}).get();
+			inc_dev_values = $("input[name='inc_dev_value[]']").map(function(){return $(this).val();}).get();
+			percentage_values = $("input[name='percentage_value[]']").map(function(){return $(this).val();}).get();
+		
+			$('#stock_data_container').html('');
+
+			for (var i = 0; i < companies.length ; i++) {
+				let icon = (inc_dev_values[i] > 0)? "https://forbesme-prestaging-media.s3.us-east-2.amazonaws.com/up.png" : "https://forbesme-prestaging-media.s3.us-east-2.amazonaws.com/down.png";
+				let header_bg = $("#header_background").val();
+				let header_bg_color = "#3d3d3d";
+				$('#modal_header').css('background',header_bg_color );
+				let rows_bg = $("#rows_bg").val(); 
+				let header_text = $('#header_text').val();
+				$('#header_text_modal').html(header_text); 
+				//let rows_bg_color=(rows_bg =="")? "background:#2A2826;": "background:"+rows_bg;
+				let rows_bg_color = "background:#fff;";
+				//let text_color = (inc_dev_values[i] > 0) ?"color:#a7d986;" : "color:#e0400a;";
+				let text_color = "";
+				let row_custom_color = "";
+				if(inc_dev_values[i].includes("+")){
+					text_color = "color:#fff;";
+					row_custom_color = "background: #00a652;";
+					icon = "https://forbesme-prestaging-media.s3.us-east-2.amazonaws.com/Arrow+up.png";
+					icon = "<span class='arrow-up'></span>";
+				}
+				else if(inc_dev_values[i].includes("-")){
+					text_color = "color:#fff;";
+					row_custom_color = "background: #e21f25;";
+					icon = "<span class='arrow-down'></span>";
+				}else{
+					text_color = "color:#fff;";
+					row_custom_color = "background: #00a652;";
+					icon = "https://forbesme-prestaging-media.s3.us-east-2.amazonaws.com/no+change.png";
+					inc_dev_values[i] = inc_dev_values[i];
+					icon = "<span class='arrow-up'></span>";
+				}
+				if($("#language").val() =="en" || $("#language").val() == ""){
+					let data = `
+							<div class="body-preview columns" style="${rows_bg_color} max-height:60px;">
+								<div class="columns column is-three-fifths" style="padding:0; margin:0;">
+						     	<div class="column is-half" style="margin:auto">
+						     		<p style="padding-left:20px;"class="company_name has-custom-text"><b>${companies[i]}</b></p>
+						     		
+						     	</div>
+						     	<div class="column is-half has-text-centered" style="margin:auto">
+						     		<p class="company_value has-custom-text" style="">${value_numbers[i]}</p>
+						     	</div>
+					     	</div>
+					     	<div class="column" style="${row_custom_color} border-radius:9px; padding:0px">
+					     	<div class="is-flex" style="height: 100%;">
+						     	<div class="column is-half has-text-centered" style="padding-left: 20px; margin: auto; ${text_color}">
+						     		<span class="inc_dec"><b>${inc_dev_values[i]}</b></h1>
+						     	</div>
+						     	<div class="column has-text-right" style="margin:auto;">
+						     		<span class="percentage" style="${text_color} float:right;"><b>${percentage_values[i]}</b>${icon}</span>
+						     	</div>
+						    </div>
+					    </div>
+					  </div>`;
+					$('#stock_data_container').css('direction', 'ltr');
+					$('#stock_data_container').append(data);
+
+				}else{
+					let data = `<div class="body-preview columns" style="${rows_bg_color} max-height:60px;">
+								<div class="columns column is-three-fifths" style="padding:0; margin:0;">
+						     	<div class="column is-half" style="margin:auto">
+						     		<p style="padding-left:20px;"class="company_name has-custom-text"><b>${companies[i]}</b></p>
+						     		
+						     	</div>
+						     	<div class="column is-half has-text-centered" style="margin:auto">
+						     		<p class="company_value has-custom-text" style="">${value_numbers[i]}</p>
+						     	</div>
+					     	</div>
+					     	<div class="column" style="${row_custom_color} border-radius:9px; padding:0px">
+					     	<div class="is-flex" style="height: 100%;">
+						     	<div class="column is-half has-text-centered" style="padding-left: 20px; margin: auto; ${text_color}">
+						     		<span class="inc_dec"><b>${inc_dev_values[i]}</b></h1>
+						     	</div>
+						     	<div class="column has-text-right" style="margin:auto;">
+						     		<span class="percentage" style="${text_color} float:right;"><b>${percentage_values[i]}</b>${icon}</span>
+						     	</div>
+						    </div>
+					    </div>
+					  </div>`;
+					$('#stock_data_container').css('direction', 'rtl');
+					$('#stock_data_container').addClass('arabic-template');
+					$('#capture_area').addClass('arabic-template');
+
+					$('#stock_data_container').append(data);
+				}
+					
+			}
+			$('#modal_previewer').addClass('is-active');
+		});
+		$('#close_modal').click(function(){
+			$('#modal_previewer').removeClass('is-active');
+		});
+
+		// Function to convert image to base64
+		function convertImageToBase64(img) {
+			return new Promise((resolve) => {
+				const canvas = document.createElement('canvas');
+				canvas.width = img.naturalWidth;
+				canvas.height = img.naturalHeight;
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(img, 0, 0);
+				resolve(canvas.toDataURL('image/png'));
+			});
+		}
+
+		// Download image button
+		$('#download_image').click(async function(){
+			const captureArea = document.getElementById('capture_area');
+			const headerText = $('#header_text').val() || 'stock-market';
+			const fileName = headerText.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.png';
+
+			$(this).addClass('is-loading');
+
+			// Convert logo to base64 first to avoid CORS issues
+			const logoImg = document.getElementById('forbes_logo');
+			const originalSrc = logoImg.src;
+
+			try {
+				const base64Logo = await convertImageToBase64(logoImg);
+				logoImg.src = base64Logo;
+			} catch (e) {
+				console.log('Could not convert logo to base64, continuing anyway');
+			}
+
+			// Store original styles
+			const modalBody = $('#capture_area');
+			const originalOverflow = modalBody.css('overflow');
+			const originalHeight = modalBody.css('height');
+			const originalMaxHeight = modalBody.css('max-height');
+
+			// Temporarily remove scroll constraints to capture full content
+			modalBody.css({
+				'overflow': 'visible',
+				'height': 'auto',
+				'max-height': 'none'
+			});
+
+			html2canvas(captureArea, {
+				backgroundColor: '#ffffff',
+				scale: 2, // Higher quality
+				useCORS: true,
+				allowTaint: true,
+				scrollX: 0,
+				scrollY: 0,
+				windowWidth: captureArea.scrollWidth,
+				windowHeight: captureArea.scrollHeight
+			}).then(canvas => {
+				// Restore original styles
+				modalBody.css({
+					'overflow': originalOverflow,
+					'height': originalHeight,
+					'max-height': originalMaxHeight
+				});
+
+				// Restore original logo src
+				logoImg.src = originalSrc;
+
+				const link = document.createElement('a');
+				link.download = fileName;
+				link.href = canvas.toDataURL('image/png');
+				link.click();
+				$('#download_image').removeClass('is-loading');
+			}).catch(err => {
+				// Restore original styles on error too
+				modalBody.css({
+					'overflow': originalOverflow,
+					'height': originalHeight,
+					'max-height': originalMaxHeight
+				});
+
+				// Restore original logo src
+				logoImg.src = originalSrc;
+
+				console.error('Error generating image:', err);
+				alert('Error generating image. Please try again.');
+				$('#download_image').removeClass('is-loading');
+			});
+		});
+
+	})
+</script>
+</html>
