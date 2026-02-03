@@ -620,31 +620,14 @@
 
 			// Check if this preset uses ZagTrader (Arab markets)
 			if (config.zagtraderIds && config.zagtraderIds.length > 0) {
-				const zagData = await fetchZagTraderData(config.zagtraderIds);
-
-				// Also fetch Muscat data if configured
-				let msxData = null;
-				if (config.msxIndex !== undefined) {
-					msxData = await fetchMSXData();
-				}
-
-				// Also fetch Bahrain data if configured (Mubasher API)
-				let bahrainData = null;
-				if (config.bahrainIndex !== undefined) {
-					bahrainData = await fetchBahrainData();
-				}
-
-				// Also fetch Egypt data if configured (Mubasher API)
-				let egyptData = null;
-				if (config.egyptIndex !== undefined) {
-					egyptData = await fetchEgyptData();
-				}
-
-				// Also fetch Jordan data if configured (Mubasher API)
-				let jordanData = null;
-				if (config.jordanIndex !== undefined) {
-					jordanData = await fetchJordanData();
-				}
+				// Fetch all data in parallel for faster loading
+				const [zagData, msxData, bahrainData, egyptData, jordanData] = await Promise.all([
+					fetchZagTraderData(config.zagtraderIds),
+					config.msxIndex !== undefined ? fetchMSXData() : Promise.resolve(null),
+					config.bahrainIndex !== undefined ? fetchBahrainData() : Promise.resolve(null),
+					config.egyptIndex !== undefined ? fetchEgyptData() : Promise.resolve(null),
+					config.jordanIndex !== undefined ? fetchJordanData() : Promise.resolve(null)
+				]);
 
 				$(this).removeClass('is-loading');
 
