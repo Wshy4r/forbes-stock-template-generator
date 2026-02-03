@@ -284,17 +284,34 @@
 		const MUBASHER_API_BASE = 'https://www.mubasher.info/api/1/markets';
 		// Mubasher market codes: MSM (Muscat), ASE (Jordan), EGX (Egypt), BB (Bahrain)
 
-		// CORS proxy (using allorigins for better GitHub Pages compatibility)
-		const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+		// CORS proxies with fallback for reliability
+		const CORS_PROXIES = [
+			'https://api.allorigins.win/raw?url=',
+			'https://corsproxy.io/?',
+			'https://api.codetabs.com/v1/proxy?quest='
+		];
+
+		// Helper function to fetch with proxy fallback
+		async function fetchWithProxy(url) {
+			for (const proxy of CORS_PROXIES) {
+				try {
+					const proxyUrl = proxy + encodeURIComponent(url);
+					const response = await fetch(proxyUrl);
+					if (response.ok) {
+						return await response.json();
+					}
+				} catch (error) {
+					console.log(`Proxy ${proxy} failed, trying next...`);
+				}
+			}
+			return null;
+		}
 
 		// Function to fetch Muscat market data using Mubasher API (MSX30 index)
 		async function fetchMSXData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/MSM');
-
 			try {
-				console.log('Fetching Muscat via Mubasher proxy...');
-				const response = await fetch(proxyUrl);
-				const data = await response.json();
+				console.log('Fetching Muscat via Mubasher...');
+				const data = await fetchWithProxy(MUBASHER_API_BASE + '/MSM');
 				console.log('Muscat data:', data);
 				if (data && data.priceBar) {
 					return data.priceBar;
@@ -306,14 +323,11 @@
 			}
 		}
 
-		// Function to fetch Jordan market data using CORS proxy
+		// Function to fetch Jordan market data using Mubasher API
 		async function fetchJordanData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/ASE');
-
 			try {
-				console.log('Fetching Jordan via proxy...');
-				const response = await fetch(proxyUrl);
-				const data = await response.json();
+				console.log('Fetching Jordan via Mubasher...');
+				const data = await fetchWithProxy(MUBASHER_API_BASE + '/ASE');
 				console.log('Jordan data:', data);
 				if (data && data.priceBar) {
 					return data.priceBar;
@@ -327,12 +341,9 @@
 
 		// Function to fetch Bahrain market data using Mubasher API (BHBX index)
 		async function fetchBahrainData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/BB');
-
 			try {
-				console.log('Fetching Bahrain via Mubasher proxy...');
-				const response = await fetch(proxyUrl);
-				const data = await response.json();
+				console.log('Fetching Bahrain via Mubasher...');
+				const data = await fetchWithProxy(MUBASHER_API_BASE + '/BB');
 				console.log('Bahrain data:', data);
 				if (data && data.priceBar) {
 					return data.priceBar;
@@ -346,12 +357,9 @@
 
 		// Function to fetch Egypt market data using Mubasher API (EGX30 index)
 		async function fetchEgyptData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/EGX');
-
 			try {
-				console.log('Fetching Egypt via Mubasher proxy...');
-				const response = await fetch(proxyUrl);
-				const data = await response.json();
+				console.log('Fetching Egypt via Mubasher...');
+				const data = await fetchWithProxy(MUBASHER_API_BASE + '/EGX');
 				console.log('Egypt data:', data);
 				if (data && data.priceBar) {
 					return data.priceBar;
