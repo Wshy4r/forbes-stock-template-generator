@@ -280,38 +280,28 @@
 		// ZagTrader API endpoint (for Arab markets)
 		const ZAGTRADER_API_BASE = 'https://zagtrader.prod.cnbcarabia.com/api/PriceQuoteAPI.php';
 
-		// Muscat MSX API endpoint
-		const MSX_API_BASE = 'https://www.msx.om/api.aspx/Indices';
-
-		// Mubasher API endpoint (for Jordan, Egypt, Bahrain)
+		// Mubasher API endpoint (for Muscat, Jordan, Egypt, Bahrain)
 		const MUBASHER_API_BASE = 'https://www.mubasher.info/api/1/markets';
-		// Mubasher market codes: ASE (Jordan), EGX (Egypt), BB (Bahrain)
+		// Mubasher market codes: MSM (Muscat), ASE (Jordan), EGX (Egypt), BB (Bahrain)
 
 		// CORS proxy (using allorigins for better GitHub Pages compatibility)
 		const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
-		// Function to fetch Muscat market data using CORS proxy
+		// Function to fetch Muscat market data using Mubasher API (MSX30 index)
 		async function fetchMSXData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(MSX_API_BASE);
+			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/MSM');
 
 			try {
-				console.log('Fetching MSX via proxy...');
-				const response = await fetch(proxyUrl, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json; charset=utf-8',
-						'Accept': 'application/json'
-					},
-					body: JSON.stringify({ Type: 'MSX30' })
-				});
+				console.log('Fetching Muscat via Mubasher proxy...');
+				const response = await fetch(proxyUrl);
 				const data = await response.json();
-				console.log('MSX data:', data);
-				if (data && data.d && data.d.length > 0) {
-					return data.d[0];
+				console.log('Muscat data:', data);
+				if (data && data.priceBar) {
+					return data.priceBar;
 				}
 				return null;
 			} catch (error) {
-				console.error('Error fetching MSX data:', error);
+				console.error('Error fetching Muscat data:', error);
 				return null;
 			}
 		}
@@ -448,20 +438,20 @@
 				}
 			});
 
-			// Fill Muscat data if available
+			// Fill Muscat data if available (Mubasher API - MSX30 index)
 			if (msxIndex !== undefined && msxData) {
 				$(companyInputs[msxIndex]).val(companies[msxIndex]);
 
-				// MSX data has: MSX30 (value), ChangeValue (change), Change (percentage)
-				$(valueInputs[msxIndex]).val(msxData.MSX30 || '');
+				// Mubasher priceBar has: value, change, changePercentage
+				$(valueInputs[msxIndex]).val(msxData.value || '');
 
-				let changeVal = String(msxData.ChangeValue || '0');
+				let changeVal = String(msxData.change || '0');
 				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
 					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
 				}
 				$(changeInputs[msxIndex]).val(changeVal);
 
-				let pctVal = String(msxData.Change || '0');
+				let pctVal = String(msxData.changePercentage || '0');
 				pctVal = pctVal.replace('%', '').trim();
 				pctVal = parseFloat(pctVal).toFixed(2);
 				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
