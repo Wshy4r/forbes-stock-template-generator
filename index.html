@@ -255,9 +255,9 @@
 				symbols: [], // Uses ZagTrader API instead
 				zagtraderIds: [10696, 1130, 1128, 10905, 11552], // Saudi, Abu Dhabi, Dubai, Kuwait, Qatar (first 5)
 				msxIndex: 5, // Index 5 = سوق مسقط (Muscat)
-				bahrainIndex: 6, // Index 6 = بورصة البحرين (Bahrain)
-				jordanIndex: 8, // Index 8 = بورصة الأردن (Jordan)
-				// Note: Egypt requires manual entry
+				bahrainIndex: 6, // Index 6 = بورصة البحرين (Bahrain) - uses Mubasher API (BB)
+				egyptIndex: 7, // Index 7 = بورصة مصر (Egypt) - uses Mubasher API (EGX)
+				jordanIndex: 8, // Index 8 = بورصة الأردن (Jordan) - uses Mubasher API (ASE)
 				language: 'ar'
 			},
 			'أسعار النفط': {
@@ -283,12 +283,9 @@
 		// Muscat MSX API endpoint
 		const MSX_API_BASE = 'https://www.msx.om/api.aspx/Indices';
 
-		// Mubasher API endpoint (for Jordan)
+		// Mubasher API endpoint (for Jordan, Egypt, Bahrain)
 		const MUBASHER_API_BASE = 'https://www.mubasher.info/api/1/markets';
-
-		// Bahrain Bourse API endpoint
-		const BAHRAIN_API_BASE = 'https://webapi.bahrainbourse.com/api/data/GetTabularDataOnHome?storedProcdure=HomePageBahrainAllShareIndex&name=HPBAllShareIndex';
-		const BAHRAIN_API_KEY = 'b2d04a3be333491d817bc518343c03f496da61e30ae443459536f5c186ab599c';
+		// Mubasher market codes: ASE (Jordan), EGX (Egypt), BB (Bahrain)
 
 		// CORS proxy
 		const CORS_PROXY = 'https://corsproxy.io/?';
@@ -338,27 +335,40 @@
 			}
 		}
 
-		// Function to fetch Bahrain market data using CORS proxy
+		// Function to fetch Bahrain market data using Mubasher API (BHBX index)
 		async function fetchBahrainData() {
-			const proxyUrl = CORS_PROXY + encodeURIComponent(BAHRAIN_API_BASE);
+			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/BB');
 
 			try {
-				console.log('Fetching Bahrain via proxy...');
-				const response = await fetch(proxyUrl, {
-					headers: {
-						'Authorization': 'Bearer ' + BAHRAIN_API_KEY,
-						'Content-Type': 'application/json; charset=utf-8',
-						'Accept': 'application/json'
-					}
-				});
+				console.log('Fetching Bahrain via Mubasher proxy...');
+				const response = await fetch(proxyUrl);
 				const data = await response.json();
 				console.log('Bahrain data:', data);
-				if (data && data.data && data.data.length > 0) {
-					return data.data[0];
+				if (data && data.priceBar) {
+					return data.priceBar;
 				}
 				return null;
 			} catch (error) {
 				console.error('Error fetching Bahrain data:', error);
+				return null;
+			}
+		}
+
+		// Function to fetch Egypt market data using Mubasher API (EGX30 index)
+		async function fetchEgyptData() {
+			const proxyUrl = CORS_PROXY + encodeURIComponent(MUBASHER_API_BASE + '/EGX');
+
+			try {
+				console.log('Fetching Egypt via Mubasher proxy...');
+				const response = await fetch(proxyUrl);
+				const data = await response.json();
+				console.log('Egypt data:', data);
+				if (data && data.priceBar) {
+					return data.priceBar;
+				}
+				return null;
+			} catch (error) {
+				console.error('Error fetching Egypt data:', error);
 				return null;
 			}
 		}
@@ -402,7 +412,7 @@
 
 
 		// Function to fill form with ZagTrader data (Arab markets)
-		function fillFormWithZagTraderData(quotes, companies, msxIndex, msxData, bahrainIndex, bahrainData, jordanIndex, jordanData) {
+		function fillFormWithZagTraderData(quotes, companies, msxIndex, msxData, bahrainIndex, bahrainData, egyptIndex, egyptData, jordanIndex, jordanData) {
 			const companyInputs = $("input[name='company_name[]']");
 			const valueInputs = $("input[name='value_number[]']");
 			const changeInputs = $("input[name='inc_dev_value[]']");
@@ -461,24 +471,20 @@
 				$(percentInputs[msxIndex]).val(pctVal);
 			}
 
-			// Fill Bahrain data if available
+			// Fill Bahrain data if available (Mubasher API - BHBX index)
 			if (bahrainIndex !== undefined && bahrainData) {
 				$(companyInputs[bahrainIndex]).val(companies[bahrainIndex]);
 
-				// Bahrain data has: Index (value), Change (contains both change and percentage like "3.38\t 0.17 %")
-				$(valueInputs[bahrainIndex]).val(bahrainData.Index || '');
+				// Mubasher priceBar has: value, change, changePercentage
+				$(valueInputs[bahrainIndex]).val(bahrainData.value || '');
 
-				// Parse the Change field which contains "3.38\t 0.17 %"
-				const changeStr = bahrainData.Change || '0\t0%';
-				const changeParts = changeStr.split(/\t|\s+/);
-
-				let changeVal = changeParts[0] || '0';
+				let changeVal = String(bahrainData.change || '0');
 				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
 					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
 				}
 				$(changeInputs[bahrainIndex]).val(changeVal);
 
-				let pctVal = changeParts[1] || '0';
+				let pctVal = String(bahrainData.changePercentage || '0');
 				pctVal = pctVal.replace('%', '').trim();
 				pctVal = parseFloat(pctVal).toFixed(2);
 				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
@@ -486,6 +492,29 @@
 				}
 				pctVal = pctVal + '%';
 				$(percentInputs[bahrainIndex]).val(pctVal);
+			}
+
+			// Fill Egypt data if available (Mubasher API - EGX30 index)
+			if (egyptIndex !== undefined && egyptData) {
+				$(companyInputs[egyptIndex]).val(companies[egyptIndex]);
+
+				// Mubasher priceBar has: value, change, changePercentage
+				$(valueInputs[egyptIndex]).val(egyptData.value || '');
+
+				let changeVal = String(egyptData.change || '0');
+				if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
+					changeVal = parseFloat(changeVal.replace(/,/g, '')) >= 0 ? '+' + changeVal : changeVal;
+				}
+				$(changeInputs[egyptIndex]).val(changeVal);
+
+				let pctVal = String(egyptData.changePercentage || '0');
+				pctVal = pctVal.replace('%', '').trim();
+				pctVal = parseFloat(pctVal).toFixed(2);
+				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
+					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
+				}
+				pctVal = pctVal + '%';
+				$(percentInputs[egyptIndex]).val(pctVal);
 			}
 
 			// Fill Jordan data if available
@@ -609,13 +638,19 @@
 					msxData = await fetchMSXData();
 				}
 
-				// Also fetch Bahrain data if configured
+				// Also fetch Bahrain data if configured (Mubasher API)
 				let bahrainData = null;
 				if (config.bahrainIndex !== undefined) {
 					bahrainData = await fetchBahrainData();
 				}
 
-				// Also fetch Jordan data if configured
+				// Also fetch Egypt data if configured (Mubasher API)
+				let egyptData = null;
+				if (config.egyptIndex !== undefined) {
+					egyptData = await fetchEgyptData();
+				}
+
+				// Also fetch Jordan data if configured (Mubasher API)
 				let jordanData = null;
 				if (config.jordanIndex !== undefined) {
 					jordanData = await fetchJordanData();
@@ -624,7 +659,7 @@
 				$(this).removeClass('is-loading');
 
 				if (zagData && zagData.length > 0) {
-					fillFormWithZagTraderData(zagData, config.companies, config.msxIndex, msxData, config.bahrainIndex, bahrainData, config.jordanIndex, jordanData);
+					fillFormWithZagTraderData(zagData, config.companies, config.msxIndex, msxData, config.bahrainIndex, bahrainData, config.egyptIndex, egyptData, config.jordanIndex, jordanData);
 				} else {
 					alert('Error fetching Arab markets data. Please try again.');
 				}
