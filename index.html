@@ -287,8 +287,8 @@
 		const MUBASHER_API_BASE = 'https://www.mubasher.info/api/1/markets';
 		// Mubasher market codes: ASE (Jordan), EGX (Egypt), BB (Bahrain)
 
-		// CORS proxy
-		const CORS_PROXY = 'https://corsproxy.io/?';
+		// CORS proxy (using allorigins for better GitHub Pages compatibility)
+		const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 		// Function to fetch Muscat market data using CORS proxy
 		async function fetchMSXData() {
