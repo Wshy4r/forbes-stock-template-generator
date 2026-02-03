@@ -379,25 +379,26 @@
 			}
 		}
 
-		// Function to fetch Arab markets data from ZagTrader
+		// Function to fetch Arab markets data from ZagTrader (parallel)
 		async function fetchZagTraderData(tickerIds) {
-			const results = [];
-
-			for (const tickerId of tickerIds) {
+			const promises = tickerIds.map(async (tickerId) => {
 				try {
 					const url = `${ZAGTRADER_API_BASE}?tickerId=${tickerId}&marketIndexOnly=0&outputType=json`;
 					const response = await fetch(url);
 					const data = await response.json();
 					// ZagTrader API returns: {code: "R200", data: {list: [...]}}
 					if (data && data.code === "R200" && data.data && data.data.list && data.data.list.length > 0) {
-						results.push(data.data.list[0]);
+						return data.data.list[0];
 					}
+					return null;
 				} catch (error) {
 					console.error(`Error fetching ZagTrader data for ticker ${tickerId}:`, error);
+					return null;
 				}
-			}
+			});
 
-			return results;
+			const results = await Promise.all(promises);
+			return results.filter(r => r !== null);
 		}
 
 
