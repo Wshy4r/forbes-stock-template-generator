@@ -581,12 +581,10 @@
 					}
 					$(changeInputs[index]).val(changeVal);
 
-					// Format percentage
+					// Format percentage - no +/- sign
 					let pctVal = quote.change_pct || quote.changePct || '';
-					pctVal = pctVal.replace('%', '').trim();
-					if (pctVal && !pctVal.endsWith('%')) {
-						pctVal = pctVal + '%';
-					}
+					pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
+					pctVal = Math.abs(parseFloat(pctVal) || 0).toFixed(2) + '%';
 					$(percentInputs[index]).val(pctVal);
 				}
 			});
