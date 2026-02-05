@@ -436,15 +436,11 @@
 					}
 					$(changeInputs[index]).val(changeVal);
 
-					// Format percentage (ZagTrader uses changePercent)
+					// Format percentage (ZagTrader uses changePercent) - no +/- sign
 					let pctVal = String(quote.changePercent || '0');
-					pctVal = pctVal.replace('%', '').trim();
+					pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
 					// Round to 2 decimal places
-					pctVal = parseFloat(pctVal).toFixed(2);
-					if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
-						pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
-					}
-					pctVal = pctVal + '%';
+					pctVal = Math.abs(parseFloat(pctVal)).toFixed(2) + '%';
 					$(percentInputs[index]).val(pctVal);
 				}
 			});
@@ -463,12 +459,8 @@
 				$(changeInputs[msxIndex]).val(changeVal);
 
 				let pctVal = String(msxData.changePercentage || '0');
-				pctVal = pctVal.replace('%', '').trim();
-				pctVal = parseFloat(pctVal).toFixed(2);
-				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
-					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
-				}
-				pctVal = pctVal + '%';
+				pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
+				pctVal = Math.abs(parseFloat(pctVal)).toFixed(2) + '%';
 				$(percentInputs[msxIndex]).val(pctVal);
 			}
 
@@ -486,12 +478,8 @@
 				$(changeInputs[bahrainIndex]).val(changeVal);
 
 				let pctVal = String(bahrainData.changePercentage || '0');
-				pctVal = pctVal.replace('%', '').trim();
-				pctVal = parseFloat(pctVal).toFixed(2);
-				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
-					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
-				}
-				pctVal = pctVal + '%';
+				pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
+				pctVal = Math.abs(parseFloat(pctVal)).toFixed(2) + '%';
 				$(percentInputs[bahrainIndex]).val(pctVal);
 			}
 
@@ -509,12 +497,8 @@
 				$(changeInputs[egyptIndex]).val(changeVal);
 
 				let pctVal = String(egyptData.changePercentage || '0');
-				pctVal = pctVal.replace('%', '').trim();
-				pctVal = parseFloat(pctVal).toFixed(2);
-				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
-					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
-				}
-				pctVal = pctVal + '%';
+				pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
+				pctVal = Math.abs(parseFloat(pctVal)).toFixed(2) + '%';
 				$(percentInputs[egyptIndex]).val(pctVal);
 			}
 
@@ -532,12 +516,8 @@
 				$(changeInputs[jordanIndex]).val(changeVal);
 
 				let pctVal = String(jordanData.changePercentage || '0');
-				pctVal = pctVal.replace('%', '').trim();
-				pctVal = parseFloat(pctVal).toFixed(2);
-				if (!pctVal.startsWith('-') && !pctVal.startsWith('+')) {
-					pctVal = parseFloat(pctVal) >= 0 ? '+' + pctVal : pctVal;
-				}
-				pctVal = pctVal + '%';
+				pctVal = pctVal.replace('%', '').replace('+', '').replace('-', '').trim();
+				pctVal = Math.abs(parseFloat(pctVal)).toFixed(2) + '%';
 				$(percentInputs[jordanIndex]).val(pctVal);
 			}
 		}
