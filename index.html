@@ -425,15 +425,16 @@
 					// Use the preset company name (Arabic)
 					$(companyInputs[index]).val(companies[index]);
 
-					// Format the price value (ZagTrader uses lastPrice)
+					// Format the price value (ZagTrader uses lastPrice) - add thousand separators
 					let priceVal = quote.lastPrice || '';
+					// Add thousand separators (e.g., 11188.73 -> 11,188.73)
+					priceVal = parseFloat(priceVal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 					$(valueInputs[index]).val(priceVal);
 
-					// Format change with + or - sign (ZagTrader uses lastDelta)
-					let changeVal = String(quote.lastDelta || '0');
-					if (!changeVal.startsWith('-') && !changeVal.startsWith('+')) {
-						changeVal = parseFloat(changeVal) >= 0 ? '+' + changeVal : changeVal;
-					}
+					// Format change with + or - sign (ZagTrader uses lastDelta) - add thousand separators
+					let changeNum = parseFloat(quote.lastDelta || '0');
+					let changeVal = Math.abs(changeNum).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+					changeVal = changeNum >= 0 ? '+' + changeVal : '-' + changeVal;
 					$(changeInputs[index]).val(changeVal);
 
 					// Format percentage (ZagTrader uses changePercent) - no +/- sign
