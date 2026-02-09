@@ -183,6 +183,25 @@
 		</div>
 		<div class="column is-one-quarter">
 		</div>
+		<!-- Note for Arab Markets -->
+		<div class="columns is-centered" id="arab_markets_note" style="display: none;">
+			<div class="column is-half">
+				<div class="notification is-warning is-light">
+					<p><strong>Note:</strong> In case any Arab market figure is showing 0.00, it means there is an error. Please take numbers from the official country stock website:</p>
+					<ul style="margin-top: 10px; list-style: disc; margin-left: 20px;">
+						<li><a href="https://www.saudiexchange.sa/wps/portal/tadawul/home/" target="_blank">السوق السعودي (Saudi)</a></li>
+						<li><a href="https://www.adx.ae/English/Pages/default.aspx" target="_blank">سوق أبوظبي (Abu Dhabi)</a></li>
+						<li><a href="https://www.dfm.ae/" target="_blank">سوق دبي (Dubai)</a></li>
+						<li><a href="https://www.boursakuwait.com.kw/en/" target="_blank">بورصة الكويت (Kuwait)</a></li>
+						<li><a href="https://www.qe.com.qa/" target="_blank">بورصة قطر (Qatar)</a></li>
+						<li><a href="https://www.msx.om/" target="_blank">سوق مسقط (Muscat)</a></li>
+						<li><a href="https://www.bahrainbourse.com/" target="_blank">بورصة البحرين (Bahrain)</a></li>
+						<li><a href="https://www.bloomberg.com/quote/EGX30:IND" target="_blank">بورصة مصر (Egypt)</a></li>
+						<li><a href="https://www.ase.com.jo/en" target="_blank">بورصة الأردن (Jordan)</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
 		<div class="columns is-multiline is-centered" id="dynamic_columns_generator"></div>
 		<div class="columns is-centered" id="preview_button_container">
 			<div class="control">
@@ -683,6 +702,13 @@
 			let selectedValue = $(this).val();
 			if(selectedValue !== ""){
 				$('#header_text').val(selectedValue);
+
+				// Show/hide Arab markets note
+				if(selectedValue === 'إغلاق الأسواق العربية'){
+					$('#arab_markets_note').show();
+				} else {
+					$('#arab_markets_note').hide();
+				}
 
 				// Auto-generate rows based on preset
 				if(presetConfig[selectedValue]){
