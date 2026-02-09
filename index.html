@@ -88,6 +88,31 @@
 		body{
 			padding-bottom: 100px;
 		}
+		.zero-value-link {
+			display: inline-block;
+			margin-left: 8px;
+			padding: 4px 10px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white !important;
+			font-size: 0.75rem;
+			font-weight: 600;
+			border-radius: 15px;
+			text-decoration: none;
+			animation: gentle-pulse 2s infinite;
+			vertical-align: middle;
+		}
+		.zero-value-link:hover {
+			transform: scale(1.05);
+			box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+		}
+		@keyframes gentle-pulse {
+			0%, 100% { opacity: 1; }
+			50% { opacity: 0.7; }
+		}
+		.zero-value-row {
+			background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.15) 100%) !important;
+			border-color: #ffb347 !important;
+		}
 		@media screen and (min-width: 769px), print{
             .modal-card, .modal-content {
                 margin: 0 auto;
@@ -183,26 +208,39 @@
 		</div>
 		<div class="column is-one-quarter">
 		</div>
-		<!-- Note for Arab Markets -->
-		<div class="columns is-centered" id="arab_markets_note" style="display: none;">
-			<div class="column is-half">
-				<div class="notification is-warning is-light">
-					<p><strong>Note:</strong> In case any Arab market figure is showing 0.00, it means there is an error. Please take numbers from the official country stock website:</p>
-					<ul style="margin-top: 10px; list-style: disc; margin-left: 20px;">
-						<li><a href="https://www.saudiexchange.sa/wps/portal/tadawul/home/" target="_blank">السوق السعودي (Saudi)</a></li>
-						<li><a href="https://www.adx.ae/English/Pages/default.aspx" target="_blank">سوق أبوظبي (Abu Dhabi)</a></li>
-						<li><a href="https://www.dfm.ae/" target="_blank">سوق دبي (Dubai)</a></li>
-						<li><a href="https://www.boursakuwait.com.kw/en/" target="_blank">بورصة الكويت (Kuwait)</a></li>
-						<li><a href="https://www.qe.com.qa/" target="_blank">بورصة قطر (Qatar)</a></li>
-						<li><a href="https://www.msx.om/" target="_blank">سوق مسقط (Muscat)</a></li>
-						<li><a href="https://www.bahrainbourse.com/" target="_blank">بورصة البحرين (Bahrain)</a></li>
-						<li><a href="https://www.bloomberg.com/quote/EGX30:IND" target="_blank">بورصة مصر (Egypt)</a></li>
-						<li><a href="https://www.ase.com.jo/en" target="_blank">بورصة الأردن (Jordan)</a></li>
-					</ul>
+		<!-- Note for Arab Markets (shown only when Arab markets preset is selected) -->
+		<div class="columns is-centered" id="arab_markets_note" style="display: none; margin-top: 15px;">
+			<div class="column is-11">
+				<div style="background: #fdf6e3; border: 1px solid #d4c4a8; border-radius: 8px; padding: 14px 20px;">
+					<p style="color: #5c5141; font-size: 0.95rem; margin-bottom: 10px;">
+						<strong>Note:</strong> In case any Arab market figure is showing 0.00, it means there is an error. Please take numbers from the official country stock website:
+					</p>
+					<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+						<a href="https://www.saudiexchange.sa/wps/portal/tadawul/home/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">السوق السعودي</a>
+						<a href="https://www.adx.ae/English/Pages/default.aspx" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">سوق أبوظبي</a>
+						<a href="https://www.dfm.ae/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">سوق دبي</a>
+						<a href="https://www.boursakuwait.com.kw/en/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">بورصة الكويت</a>
+						<a href="https://www.qe.com.qa/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">بورصة قطر</a>
+						<a href="https://www.msx.om/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">سوق مسقط</a>
+						<a href="https://www.bahrainbourse.com/" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">بورصة البحرين</a>
+						<a href="https://www.bloomberg.com/quote/EGX30:IND" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">بورصة مصر</a>
+						<a href="https://www.ase.com.jo/en" target="_blank" style="background: #e8dcc8; color: #5c5141; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">بورصة الأردن</a>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="columns is-multiline is-centered" id="dynamic_columns_generator"></div>
+		<!-- Note for Other Markets (CNBC) -->
+		<div class="columns is-centered" id="other_markets_note" style="display: none; margin-top: 15px;">
+			<div class="column is-11">
+				<div style="background: #e8f4f8; border: 1px solid #b8d4e3; border-radius: 8px; padding: 14px 20px;">
+					<p style="color: #3d5a6c; font-size: 0.95rem; margin: 0;">
+						<strong>Note:</strong> For any data issues, check the main source:
+						<a href="https://www.cnbc.com/world/?region=world" target="_blank" style="background: #c9e2ed; color: #3d5a6c; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: 500; margin-left: 8px;">CNBC World Markets</a>
+					</p>
+				</div>
+			</div>
+		</div>
+			<div class="columns is-multiline is-centered" id="dynamic_columns_generator"></div>
 		<div class="columns is-centered" id="preview_button_container">
 			<div class="control">
 			    <button id="preview_modal" class="button is-primary modal-button" data-target="modal-ter" aria-haspopup="true">Preview</button>
@@ -292,6 +330,57 @@
 				language: 'en'
 			}
 		};
+
+		// Arab market official website links (mapped by company name)
+		const arabMarketLinks = {
+			'السوق السعودي': 'https://www.saudiexchange.sa/wps/portal/tadawul/home/',
+			'سوق أبوظبي': 'https://www.adx.ae/English/Pages/default.aspx',
+			'سوق دبي': 'https://www.dfm.ae/',
+			'بورصة الكويت': 'https://www.boursakuwait.com.kw/en/',
+			'بورصة قطر': 'https://www.qe.com.qa/',
+			'سوق مسقط': 'https://www.msx.om/',
+			'بورصة البحرين': 'https://www.bahrainbourse.com/',
+			'بورصة مصر': 'https://www.bloomberg.com/quote/EGX30:IND',
+			'بورصة الأردن': 'https://www.ase.com.jo/en'
+		};
+
+		// Function to check for zero values and add link next to each row
+		function checkForZeroValues() {
+			const companyInputs = $("input[name='company_name[]']");
+			const valueInputs = $("input[name='value_number[]']");
+			const changeInputs = $("input[name='inc_dev_value[]']");
+			const percentInputs = $("input[name='percentage_value[]']");
+
+			// Remove any existing zero-value links and highlights
+			$('.zero-value-link').remove();
+			$('.zero-value-row').removeClass('zero-value-row');
+
+			companyInputs.each(function(index) {
+				const companyName = $(this).val();
+				const value = $(valueInputs[index]).val();
+				const change = $(changeInputs[index]).val();
+				const percent = $(percentInputs[index]).val();
+
+				// Parse all values (remove commas, +, -, %)
+				const numValue = parseFloat(value.replace(/,/g, '')) || 0;
+				const numChange = parseFloat(change.replace(/[,+\-]/g, '')) || 0;
+				const numPercent = parseFloat(percent.replace(/[%+\-]/g, '')) || 0;
+
+				// Check if ANY of the fields is 0 or empty
+				const hasZero = (numValue === 0 || numChange === 0 || numPercent === 0 || value === '' || change === '' || percent === '');
+
+				if (hasZero && companyName && arabMarketLinks[companyName]) {
+					// Highlight the entire row
+					const row = $(this).closest('.column');
+					row.addClass('zero-value-row');
+
+					// Add a link button next to the row
+					const link = arabMarketLinks[companyName];
+					const linkHtml = `<a href="${link}" target="_blank" class="zero-value-link">Get Data ➜</a>`;
+					$(percentInputs[index]).closest('.field').after(linkHtml);
+				}
+			});
+		}
 
 		// CNBC API endpoint
 		const CNBC_API_BASE = 'https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol';
@@ -642,6 +731,8 @@
 
 				if (zagData && zagData.length > 0) {
 					fillFormWithZagTraderData(zagData, config.companies, config.msxIndex, msxData, config.bahrainIndex, bahrainData, config.egyptIndex, egyptData, config.jordanIndex, jordanData);
+					// Check for zero values and show warning if needed
+					checkForZeroValues();
 				} else {
 					alert('Error fetching Arab markets data. Please try again.');
 				}
@@ -703,11 +794,17 @@
 			if(selectedValue !== ""){
 				$('#header_text').val(selectedValue);
 
-				// Show/hide Arab markets note
+				// Remove any zero-value links and highlights when changing presets
+				$('.zero-value-link').remove();
+				$('.zero-value-row').removeClass('zero-value-row');
+
+				// Show/hide market notes
 				if(selectedValue === 'إغلاق الأسواق العربية'){
 					$('#arab_markets_note').show();
+					$('#other_markets_note').hide();
 				} else {
 					$('#arab_markets_note').hide();
+					$('#other_markets_note').show();
 				}
 
 				// Auto-generate rows based on preset
