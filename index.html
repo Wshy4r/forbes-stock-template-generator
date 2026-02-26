@@ -758,6 +758,10 @@
 			for (var i = 0; i < numRows; i++) {
 				let companyName = companies[i] || '';
 				let row = `<div class="column is-one-quarter">
+						<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+							<span style="font-size: 0.8rem; color: #888; font-weight: 500;">${companyName || 'Market ' + (i+1)}</span>
+							<button class="remove-row-btn" title="Remove this market" style="background: none; border: 1px solid #ddd; color: #aaa; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 0.75rem; line-height: 1; padding: 0;">✕</button>
+						</div>
 						<div class="field">
 						  <label class="label">Company Name</label>
 						  <div class="control">
@@ -787,6 +791,11 @@
 			}
 			$('#preview_button_container').css('display','flex');
 		}
+
+		// Remove row button click handler
+		$(document).on('click', '.remove-row-btn', function() {
+			$(this).closest('.column.is-one-quarter').remove();
+		});
 
 		// Header text preset selection
 		$('#header_text_select').change(function(){
